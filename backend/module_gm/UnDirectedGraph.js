@@ -1,5 +1,3 @@
-import {csvToJsonFromFile} from "./csvToJson.js"
-
 class UnDirectedGraph {
   constructor(nodes, edges) {
     if (nodes) {
@@ -12,66 +10,45 @@ class UnDirectedGraph {
     } else {
       this.edges = {}
     }
-
   }
-
-  // async initGraph() {
-  //   const csvFilePathNodes = "./storage/nodes.csv"
-  //   const csvFilePathEdges = "./storage/edges.csv"
-  //   const jsonNodes = await csvToJsonFunc(csvFilePathNodes)
-  //   jsonNodes.map(el => this.nodes[el.id] = el)
-  //   const jsonEdges = await csvToJsonFunc(csvFilePathEdges)
-  //   jsonEdges.map(el => this.edges[el.id] = el)
-  // }
 
   setNodes(nodes) {
     this.nodes = nodes
+  }
+
+  getNodes(){
+    return this.nodes
+  }
+  getNode(id) {
+    return this.nodes[id]
   }
 
   setEdges(edges) {
     this.edges = edges
   }
 
-  getNode(id) {
-    // Если массив
-    // return this.nodes.find(el => el.id === id)
-    // Если словарь
-    return this.nodes[id]
+  getEdges(){
+    return this.edges
   }
 
   getEdge(id) {
-    // Если массив
-    // return this.nodes.find(el => el.id === id)
-    // Если словарь
     return this.edges[id]
   }
 
-  getNeighbors(id) {
+  async getNeighbors(id) {
+    let neighbors_ids = []
     let neighbors = []
-    // Если массив
-    // this.edges.forEach((edge, index) => {
-    //   if (edge.from === id && !neighbors.includes(this.getNode(edge.to))) {
-    //     neighbors.push(this.getNode(edge.to))
-    //   }
-    //   if (edge.to === id && !neighbors.includes(this.getNode(edge.from))) {
-    //     neighbors.push(this.getNode(edge.from))
-    //   }
-    // });
-
-    // Если словарь
     Object.values(this.edges).forEach((edge, index) => {
-      if (edge.from === id && !neighbors.includes(edge.to)) {
-        neighbors.push(edge.to)
+      if (edge.from === id && !neighbors_ids.includes(edge.to)) {
+        neighbors_ids.push(edge.to)
       }
-      if (edge.to === id && !neighbors.includes(edge.from)) {
-        neighbors.push(edge.from)
+      if (edge.to === id && !neighbors_ids.includes(edge.from)) {
+        neighbors_ids.push(edge.from)
       }
     });
-
+    neighbors_ids.forEach(id => neighbors.push(this.getNode(id)))
     return neighbors
-
   }
-
 }
 
 export default new UnDirectedGraph()

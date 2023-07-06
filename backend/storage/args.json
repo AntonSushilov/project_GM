@@ -1,0 +1,1 @@
+{"nodes_path":"./storage/nodes.json","edges_path":"./storage/edges.json","function":"getNeighbors","function_args":{"selected_node":"3"},"name_result":"neighbors","path_result":"./storage/neighbors.json"}

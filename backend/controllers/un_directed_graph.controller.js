@@ -1,22 +1,24 @@
 import graph from "../module_gm/UnDirectedGraph.js"
-import {csvToJsonFromFile, csvToJsonFromString} from "../module_gm/csvToJson.js"
+import { csvToJsonFromString, saveFileJson, readFileJson, startPythonScript } from "../module_gm/utils.js"
 
 class UnDirectedGraphController {
   async uploadFiles(req, res) {
     try {
       const nodes = req.files.nodes
       const edges = req.files.edges
+
       await csvToJsonFromString(nodes.data.toString('utf8')).then(async res => {
-        let nodes = {}
-        res.map(el => nodes[el.id] = el)
-        await graph.setNodes(nodes)
+        let resNodes = {}
+        res.map(el => resNodes[el.id] = el)
+        await saveFileJson("nodes", resNodes)
       })
       await csvToJsonFromString(edges.data.toString('utf8')).then(async res => {
-        let edges = {}
-        res.map(el => edges[el.id] = el)
-        await graph.setEdges(edges)
+        let resEdges = {}
+        res.map(el => resEdges[el.id] = el)
+        await saveFileJson("edges", resEdges)
       })
-      res.status(200).json(graph)
+
+      res.status(200).json("ok")
     } catch (error) {
       res.json(error)
     }
@@ -24,15 +26,24 @@ class UnDirectedGraphController {
 
   async getGraph(req, res) {
     try {
-      res.json(graph)
+      await readFileJson("nodes").then(res => {
+        graph.setNodes(res.nodes)
+      })
+      await readFileJson("edges").then(res => {
+        graph.setEdges(res.edges)
+
+      })
+      const result = { "graph": graph }
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
   }
-  
+
   async getAllNodes(req, res) {
     try {
-      res.json(graph.nodes)
+      const result = { "nodes": graph.getNodes() }
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
@@ -41,7 +52,8 @@ class UnDirectedGraphController {
   async getOneNode(req, res) {
     try {
       const id = req.params.id
-      res.json(graph.getNode(id))
+      const result = { "node": graph.getNode(id) }
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
@@ -49,7 +61,8 @@ class UnDirectedGraphController {
 
   async getAllEdges(req, res) {
     try {
-      res.json(graph.edges)
+      const result = { "edges": graph.getEdges() }
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
@@ -58,7 +71,9 @@ class UnDirectedGraphController {
   async getOneEdge(req, res) {
     try {
       const id = req.params.id
-      res.json(graph.getEdge(id))
+      const result = { "edge": graph.getEdge(id) }
+
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
@@ -66,11 +81,29 @@ class UnDirectedGraphController {
 
   async getGraphNodeNeighbors(req, res) {
     try {
-      let neighbors = []
+      const isPython = req.query.isPython === 'true'
       const id = req.params.id
-      const neighbors_ids = graph.getNeighbors(id)
-      neighbors_ids.forEach(id => neighbors.push(graph.getNode(id)))
-      res.json(neighbors)
+
+      let neighbors = []
+      if (isPython) {
+        const args = {
+          "nodes_path": "./storage/nodes.json",
+          "edges_path": "./storage/edges.json",
+          "function": "getNeighbors",
+          "function_args": {
+            'selected_node': id
+          },
+          "name_result": "neighbors",
+          "path_result": "./storage/neighbors.json"
+        }
+        neighbors = await startPythonScript(args)
+      } else {
+        neighbors = await graph.getNeighbors(id)
+      }
+      const result = {
+        'neighbors': neighbors
+      }
+      res.json(result)
     } catch (error) {
       res.json(error)
     }
