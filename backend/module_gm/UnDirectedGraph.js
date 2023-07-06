@@ -16,26 +16,27 @@ class UnDirectedGraph {
     this.nodes = nodes
   }
 
-  getNodes(){
-    return this.nodes
-  }
-  getNode(id) {
-    return this.nodes[id]
-  }
-
   setEdges(edges) {
     this.edges = edges
   }
 
-  getEdges(){
-    return this.edges
+  getOneNode(id) {
+    return this.nodes[id]
   }
 
-  getEdge(id) {
+  getAllNodes() {
+    return this.nodes
+  }
+
+  getOneEdge(id) {
     return this.edges[id]
   }
 
-  async getNeighbors(id) {
+  getAllEdges() {
+    return this.edges
+  }
+
+  getNeighbors(id) {
     let neighbors_ids = []
     let neighbors = []
     Object.values(this.edges).forEach((edge, index) => {
@@ -46,7 +47,7 @@ class UnDirectedGraph {
         neighbors_ids.push(edge.from)
       }
     });
-    neighbors_ids.forEach(id => neighbors.push(this.getNode(id)))
+    neighbors_ids.forEach(id => neighbors.push(this.getOneNode(id)))
     return neighbors
   }
 }

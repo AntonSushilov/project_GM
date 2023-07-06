@@ -11,19 +11,27 @@ class UnDirectedGraph:
       self.edges = edges
     else:
       self.edges = {}
+
   def __str__(self) -> str:
     return str({
       'nodes': self.nodes,
       'edges': self.edges,
     })
   
-  def getNode(self, id):
+  def getAllNode(self):
+    return self.nodes
+  
+  def getOneNode(self, id):
     return self.nodes.get(id)
   
-  def getEdge(self, id):
+  def getAllEdge(self):
+    return self.edges
+  
+  def getOneEdge(self, id):
     return self.edges.get(id)
   
   def getNeighbors(self, id):
+
     neighbors_ids = []
     neighbors = []
     for edge in self.edges.values():
@@ -31,7 +39,7 @@ class UnDirectedGraph:
         neighbors_ids.append(edge.get('to'))
       if edge.get('to') == id and not edge.get('from') in neighbors_ids:
         neighbors_ids.append(edge.get('from'))
-    neighbors = [self.getNode(node) for node in neighbors_ids]
+    neighbors = [self.getOneNode(node) for node in neighbors_ids]    
     return neighbors
 
 
@@ -40,12 +48,11 @@ if __name__ == "__main__":
   json_args = open(sys.argv[1])
   graph_args = json.load(json_args)
   json_obj = open(graph_args.get("nodes_path"))
-  nodes = json.load(json_obj).get("nodes")
+  nodes = json.load(json_obj)
   json_obj = open(graph_args.get("edges_path"))
-  edges = json.load(json_obj).get("edges")
+  edges = json.load(json_obj)
 
   graph = UnDirectedGraph(nodes,edges)
-
   func =  graph_args.get("function")
   func_args = graph_args.get("function_args")
 

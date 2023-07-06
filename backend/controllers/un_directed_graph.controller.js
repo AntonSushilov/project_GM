@@ -26,11 +26,11 @@ class UnDirectedGraphController {
 
   async getGraph(req, res) {
     try {
-      await readFileJson("nodes").then(res => {
-        graph.setNodes(res.nodes)
+      await readFileJson("nodes").then(nodes => {
+        graph.setNodes(nodes)
       })
-      await readFileJson("edges").then(res => {
-        graph.setEdges(res.edges)
+      await readFileJson("edges").then(edges => {
+        graph.setEdges(edges)
 
       })
       const result = { "graph": graph }
@@ -42,7 +42,7 @@ class UnDirectedGraphController {
 
   async getAllNodes(req, res) {
     try {
-      const result = { "nodes": graph.getNodes() }
+      const result = { "nodes": graph.getAllNodes() }
       res.json(result)
     } catch (error) {
       res.json(error)
@@ -52,7 +52,7 @@ class UnDirectedGraphController {
   async getOneNode(req, res) {
     try {
       const id = req.params.id
-      const result = { "node": graph.getNode(id) }
+      const result = { "node": graph.getOneNode(id) }
       res.json(result)
     } catch (error) {
       res.json(error)
@@ -61,7 +61,7 @@ class UnDirectedGraphController {
 
   async getAllEdges(req, res) {
     try {
-      const result = { "edges": graph.getEdges() }
+      const result = { "edges": graph.getAllEdges() }
       res.json(result)
     } catch (error) {
       res.json(error)
@@ -71,7 +71,7 @@ class UnDirectedGraphController {
   async getOneEdge(req, res) {
     try {
       const id = req.params.id
-      const result = { "edge": graph.getEdge(id) }
+      const result = { "edge": graph.getOneEdge(id) }
 
       res.json(result)
     } catch (error) {
