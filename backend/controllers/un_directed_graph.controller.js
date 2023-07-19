@@ -1,5 +1,5 @@
 import graph from "../module_gm/UnDirectedGraph.js"
-import { csvToJsonFromString, saveFileJson, readFileJson, startPythonScript } from "../module_gm/utils.js"
+import { csvToJsonFromString, saveFileJson, readFileJson, startPythonScript } from "../utils/utils.js"
 
 class UnDirectedGraphController {
   async uploadFiles(req, res) {
@@ -18,7 +18,7 @@ class UnDirectedGraphController {
         await saveFileJson("edges", resEdges)
       })
 
-      res.status(200).json("ok")
+      res.status(200).json({ "message": "success" })
     } catch (error) {
       res.json(error)
     }
