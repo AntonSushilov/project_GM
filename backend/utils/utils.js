@@ -41,7 +41,6 @@ export const startPythonScript = async (args) => {
   ]);
   const result = pythonProcess.stdout?.toString()?.trim();
   const error = pythonProcess.stderr?.toString()?.trim();
-  
   const resultJson = await readFileJson(args.name_result)
   return resultJson
 }

@@ -1,3 +1,4 @@
+// index.js
 import express from "express"
 import fileUpload from "express-fileupload"
 import unDirectedGraphRouter from "./routes/un_directed_graph.router.js"
@@ -8,8 +9,10 @@ app.use(fileUpload({
   createParentPath: true
 }));
 app.use(express.json())
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 app.use('/api', unDirectedGraphRouter)
-
 
 async function startApp() {
   try {
